@@ -6,6 +6,8 @@
 <title>ANUI — AI-native UI demo</title>
 <link rel="stylesheet" href="assets/tailwind.css" />
 <link rel="stylesheet" href="motion.css" />
+<script src="i18n-en.js"></script>
+<script src="i18n.js"></script>
 <script>
   /* no-flash: resolve theme before first paint. Order: ?theme → saved → OS (contrast, scheme) */
   (function(){var d=document.documentElement,q=new URLSearchParams(location.search).get("theme"),t=q;
@@ -29,7 +31,7 @@
       <button data-t="hc">高对比</button><button data-t="oled">OLED</button><button data-t="oled-hc">OLED 高对比</button><span class="mx-0.5 w-px self-stretch bg-line-strong" aria-hidden="true"></span><button data-t="paper">纸白</button><button data-t="white">纯白</button><button data-t="dark">近黑</button>
     </div>
   </header>
-    <div class="flex items-center justify-end gap-1 px-5" id="mtoggles"><button class="m-tog" id="tgRM" aria-pressed="false">减少动效</button><button class="m-tog" id="tgSnd" aria-pressed="false">音效</button></div>
+    <div class="flex items-center justify-end gap-1 px-5" id="mtoggles"><button class="m-tog" id="tgRM" aria-pressed="false">减少动效</button><button class="m-tog" id="tgSnd" aria-pressed="false">音效</button><button class="m-tog" id="tgLang" data-i18n-keep aria-label="Language / 语言">EN</button></div>
   <section class="m-sec" id="lab">
     <h2 class="m-h">Motion Lab<span>弹簧预设、曲线实时绘制、生成 CSS linear()</span></h2>
     <div class="m-grid">
@@ -202,6 +204,7 @@ function imeEnter(el, onSend) {
 
 /* StreamText atom: 2 chars / 9ms, blurred 6-char tail, caret solid while streaming */
 function streamInto(el, text, { cps = 2, tick = 9, tail = 6, caret = true, onDone } = {}) {
+  text = T(text);
   let n = 0; clearInterval(el._st);
   el._st = setInterval(() => {
     n = Math.min(n + cps, text.length);
@@ -728,8 +731,8 @@ function streamInto(el, text, { cps = 2, tick = 9, tail = 6, caret = true, onDon
 /* 16 FLOWCHART — trigger + if/else cards on dotted canvas, draggable, measured connector, condition dropdowns */
 (() => {
   const body = section("flowchart", "Flowchart", "点阵画布上的触发器与条件步骤", { minH: 440, pad: "p-6" });
-  const state = { a: { x: 0.5, y: 46 }, b: { x: 0.5, y: 196 }, component: "表格", topping: "首帧" };
-  const OPT = { component: ["表格", "按钮", "对话框"], topping: ["首帧", "交互", "稳定性"] };
+  const state = { a: { x: 0.5, y: 46 }, b: { x: 0.5, y: 196 }, component: "表格", metric: "首帧" };
+  const OPT = { component: ["表格", "按钮", "对话框"], metric: ["首帧", "交互", "稳定性"] };
   body.innerHTML = `<div class="fc dotgrid relative h-[380px] w-full select-none overflow-hidden rounded-card bg-page shadow-hairline">
     <svg class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"><path class="wire transition-[stroke] duration-150" fill="none" stroke="var(--line-strong)" stroke-width="1.5" /></svg>
     <div data-n="a" class="node absolute flex w-[260px] -translate-x-1/2 touch-none flex-col items-start gap-1.5">
@@ -739,7 +742,7 @@ function streamInto(el, text, { cps = 2, tick = 9, tail = 6, caret = true, onDon
       <span class="inline-flex h-6 items-center rounded-[6px] bg-orange-tint px-2 text-[12px] font-medium text-orange">If / Else</span>
       <div class="w-full cursor-grab rounded-[18px] bg-surface shadow-card transition-shadow duration-150 hover:shadow-raised active:cursor-grabbing"><div class="flex flex-col gap-1.5 px-3 py-2.5">
         <div class="flex min-w-0 flex-wrap items-center gap-1.5"><span class="shrink-0 text-ink-3/70">${ic("grip", 12)}</span><span class="w-7 text-[13px] text-ink-2">如果</span><span class="inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn">${ic("tag", 12)}订单</span><button data-k="component" class="dd inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn">组件${ic("chev", 10)}</button><span class="text-[13px] text-ink-2">是</span><button data-k="componentV" class="dd v1 inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn"><span class="size-1.5 rounded-full bg-orange"></span><span class="val">${state.component}</span>${ic("chev", 10)}</button></div>
-        <div class="flex min-w-0 flex-wrap items-center gap-1.5"><span class="shrink-0 text-ink-3/70">${ic("grip", 12)}</span><span class="w-7 text-[13px] text-ink-2">且</span><span class="inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn">${ic("tag", 12)}订单</span><span class="inline-flex h-6 items-center rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn">配料</span><span class="text-[13px] text-ink-2">是</span><button data-k="toppingV" class="dd v2 inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn"><span class="size-1.5 rounded-full bg-orange"></span><span class="val">${state.topping}</span>${ic("chev", 10)}</button></div>
+        <div class="flex min-w-0 flex-wrap items-center gap-1.5"><span class="shrink-0 text-ink-3/70">${ic("grip", 12)}</span><span class="w-7 text-[13px] text-ink-2">且</span><span class="inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn">${ic("tag", 12)}订单</span><span class="inline-flex h-6 items-center rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn">指标</span><span class="text-[13px] text-ink-2">是</span><button data-k="metricV" class="dd v2 inline-flex h-6 items-center gap-1 rounded-[6px] bg-surface px-1.5 text-[12px] font-medium text-ink shadow-btn"><span class="size-1.5 rounded-full bg-orange"></span><span class="val">${state.metric}</span>${ic("chev", 10)}</button></div>
       </div></div></div></div>`;
   const fc = $(".fc", body), wire = $(".wire", body);
   const layout = () => {
@@ -761,7 +764,7 @@ function streamInto(el, text, { cps = 2, tick = 9, tail = 6, caret = true, onDon
   });
   fc.addEventListener("click", (e) => {
     const b = e.target.closest(".dd"); $("#fc-menu")?.remove(); if (!b || b.dataset.k === "component") return;
-    const key = b.dataset.k === "componentV" ? "component" : "topping", r = b.getBoundingClientRect();
+    const key = b.dataset.k === "componentV" ? "component" : "metric", r = b.getBoundingClientRect();
     const m = h(`<div id="fc-menu" role="menu" class="fixed z-50 w-40 rounded-[10px] bg-surface p-1 shadow-raised a-pop" style="left:${r.left}px;top:${r.bottom + 6}px;transform-origin:top left">${OPT[key].map((o) => `<button role="menuitemradio" aria-checked="${state[key] === o}" data-o="${o}" class="flex h-[30px] w-full items-center gap-2 rounded-[6px] px-2 text-left text-[13px] font-medium text-ink hover:bg-hover"><span class="min-w-0 flex-1 truncate">${o}</span><span class="${state[key] === o ? "" : "invisible"}">${ic("check", 12, 2.6)}</span></button>`).join("")}</div>`);
     m.onclick = (ev) => { const o = ev.target.closest("[data-o]"); if (o) { state[key] = o.dataset.o; $(".val", b).textContent = o.dataset.o; m.remove(); layout(); } };
     portal.appendChild(m); e.stopPropagation();

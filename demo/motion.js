@@ -132,7 +132,7 @@ const tools = q("#tools"), ms = q("#mstream"), barb = q("#barb"), bar = q("#bar"
 let prog = 0; const progSpring = new S.Spring(PR.settle, (x) => { barb.style.transform = `scaleX(${Math.max(0, x)})`; });
 const setProg = (p) => { prog = Math.max(prog, p); RM() ? progSpring.jump(prog) : progSpring.set(prog); }; /* never moves backwards */
 const sleep = (ms_) => new Promise((r) => setTimeout(r, ms_)); /* DEMO ONLY: real UI is event-driven */
-const TEXT = "我已读取 3 个模块，并确认 AuthContext 的 18 处调用。建议先拆分 store，再逐个替换调用点，每一步都可以单独回滚。".match(/[\u4e00-\u9fa5]{1,2}|[A-Za-z0-9]+|\s+|./g);
+const TEXT = T("我已读取 3 个模块，并确认 AuthContext 的 18 处调用。建议先拆分 store，再逐个替换调用点，每一步都可以单独回滚。").match(/[\u4e00-\u9fa5]{1,2}|[A-Za-z0-9]+|\s+|./g);
 let running = false;
 async function run() {
   if (running) return; running = true; tools.innerHTML = ""; ms.innerHTML = ""; slot.innerHTML = ""; prog = 0; progSpring.jump(0);
@@ -186,3 +186,7 @@ fxgl.addEventListener("pointermove", (e) => { const r = fxgl.getBoundingClientRe
 /* frame timing probe (for perf report) */
 let lastF = performance.now(); const probe = (t) => { window.__frames.push(t - lastF); lastF = t; requestAnimationFrame(probe); }; requestAnimationFrame(probe);
 })();
+
+/* language toggle: zh ⇄ en (reload keeps every script on one language) */
+{ const b = document.querySelector("#tgLang"); if (b) { b.textContent = window.ANUI_LANG === "en" ? "中文" : "EN";
+  b.onclick = () => { const u = new URL(location.href); u.searchParams.set("lang", window.ANUI_LANG === "en" ? "zh" : "en"); location.href = u.toString(); }; } }

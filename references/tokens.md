@@ -86,13 +86,24 @@
   --fw-normal:380;--fw-medium:470;--fw-semibold:560;--track:0.002em;--lh:1.6;   /* halation compensation */
   color-scheme:dark;
 }
-[data-theme=oled]{
+[data-theme=oled],[data-theme=oled-hc]{
   --tint-c:0;--tint-h:0;
   --page:oklch(0 0 0);--canvas:oklch(0.1 0 0);--surface:oklch(0.155 0 0);--raised:oklch(0.195 0 0);--overlay:oklch(0.235 0 0);
   --inset:oklch(0.12 0 0);--hover:oklch(0.2 0 0);--hover-2:oklch(0.24 0 0);--field:oklch(0.18 0 0);
-  --ink:oklch(0.94 0 0);--ink-2:oklch(0.79 0 0);--ink-3:oklch(0.69 0 0);--ink-4:oklch(0.58 0 0);
-  --line:oklch(1 0 0 / 0.1);--line-strong:oklch(1 0 0 / 0.16);--hi:oklch(1 0 0 / 0.09);
+  /* OLED = HC's dark sibling: crisper than near-black (stronger lines, brighter ink), same radii/ring logic as HC */
+  --ink:oklch(0.97 0 0);--ink-2:oklch(0.82 0 0);--ink-3:oklch(0.72 0 0);--ink-4:oklch(0.6 0 0);
+  --line:oklch(1 0 0 / 0.14);--line-strong:oklch(1 0 0 / 0.24);--fill-1:oklch(1 0 0 / 0.06);--fill-2:oklch(1 0 0 / 0.12);--hi:oklch(1 0 0 / 0.12);
   --stripe:oklch(1 0 0 / 0.035);--stripe-bg:oklch(0.04 0 0);
+  --red:oklch(0.79 0.125 24);--red-tint:oklch(0.79 0.125 24 / 0.14);
+  --fw-normal:400;--fw-medium:500;--fw-semibold:600;--track:0em;   /* lighter compensation than near-black: crisp like HC */
+}
+[data-theme=oled-hc]{
+  --surface:oklch(0.1 0 0);--raised:oklch(0.13 0 0);--overlay:oklch(0.16 0 0);--hover:oklch(0.2 0 0);--field:oklch(0.1 0 0);
+  --ink:oklch(1 0 0);--ink-2:oklch(0.9 0 0);--ink-3:oklch(0.82 0 0);--ink-4:oklch(0.7 0 0);
+  --line:oklch(1 0 0 / 0.5);--line-strong:oklch(1 0 0 / 0.8);--fill-1:oklch(1 0 0 / 0.1);--fill-2:oklch(1 0 0 / 0.2);--hi:transparent;
+  --stripe:transparent;--stripe-bg:oklch(0 0 0);--red:oklch(0.82 0.12 24);--red-tint:oklch(0.82 0.12 24 / 0.16);
+  --sh-1:0 0 #0000;--sh-2:0 0 #0000;--sh-3:0 0 0 2px oklch(1 0 0);--ring-w:1px!important;
+  --fw-normal:450;--fw-medium:600;--fw-semibold:700;
 }
 :root,.dark,[data-theme]{
   --accent:var(--ink);--accent-ink:var(--ink);--accent-tint:var(--fill-2);--on-accent:var(--page);   /* single-accent rule: emphasis = inversion */
@@ -105,7 +116,7 @@
   --s-raised:0 0 0 var(--ring-w) var(--line-strong),var(--sh-2);
   --s-overlay:0 0 0 var(--ring-w) var(--line-strong),var(--sh-3);
 }
-.dark,[data-theme=dark],[data-theme=oled]{
+.dark,[data-theme=dark],[data-theme=oled],[data-theme=oled-hc]{
   --s-btn:inset 0 1px 0 var(--hi),0 0 0 var(--ring-w) var(--line-strong),var(--sh-1);
   --s-card:inset 0 1px 0 var(--hi),0 0 0 var(--ring-w) var(--line-strong);
   --s-raised:inset 0 1px 0 var(--hi),0 0 0 var(--ring-w) var(--line-strong),var(--sh-2);
@@ -113,6 +124,9 @@
   --tooltip-bg:var(--overlay);--tooltip-fg:var(--ink);--tooltip-muted:var(--ink-3);--tooltip-border:var(--line-strong);
 }
 @media (min-resolution:2dppx){:root{--ring-w:.5px}}
+/* HC family: same red-tint + 1px ring + no blur materials */
+[data-theme=hc] .frost,[data-theme=oled-hc] .frost{backdrop-filter:none;background:var(--surface)}
+[data-theme=hc] .grain::after,[data-theme=oled-hc] .grain::after{display:none}
 /* dark: elevated surfaces get lighter (Apple base/elevated, Material overlay) */
 .dark .bg-surface.shadow-raised:not([data-theme=white] *),.dark .bg-surface.shadow-overlay:not([data-theme=white] *){background-color:var(--overlay)}
 ```
@@ -240,7 +254,7 @@ dark（ring 改为低透明白色，随高度递增）:
 --shadow-inset-field: inset 0 1px 2px oklch(0 0 0/.4);
 ```
 
-shadow-plugin 的 light `--shadow-xs…lg` 具体层值未在 BUI 仓库中出现（来自 npm 包）。下方 CSS 给出的 light 分层值为 **未验证**（参照 smooth-shadow 常见写法，并与 dark 档对齐），可 `npm i shadow-plugin` 后替换为真值。
+shadow-plugin 的 light `--shadow-xs…lg` 具体层值未在 BUI 仓库中出现（来自 npm 包）。本附录不给出推导值；如需真值请 `npm i shadow-plugin` 后查看（未验证）。
 
 **clip 余量**：overlay（dark）外扩 = 8 + 28 = 36px（下侧）、28−8 = 20px（上侧）——放在 `overflow:hidden`/滚动容器中时至少留出该余量，见 craft-rules.md。
 

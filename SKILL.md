@@ -1,54 +1,77 @@
 ---
 name: anui
-description: ANUI（AI-Native UI）——为 Agent / Copilot / AI SaaS 设计、实现与审查界面的单色设计系统：OLED 纯黑 + 高对比纯白主题、弹簧动效、中文排版、AI 专属组件（思考轨迹、流式回答、工具调用、审批卡、任务行、输入框等）与自检脚本。在新建或打磨聊天/Agent 界面、选组件、定令牌、做动效、做 UI 验收时使用；普通营销页或纯后端任务不使用。
+description: ANUI (AI-Native UI) — a monochrome design system for designing, building and reviewing Agent / Copilot / AI SaaS interfaces. Pure-black OLED and pure-white high-contrast themes, spring motion presets, Chinese (CJK) typography, AI-native components (thinking trace, streaming text, tool calls, approval cards, task rows, prompt bar) and self-check scripts. Use when building or polishing chat/agent UIs, picking components, setting tokens, adding motion or running UI acceptance; not for plain marketing pages or backend-only work. 中文：AI 应用界面的黑白设计系统（OLED / 高对比、弹簧动效、中文排版、AI 组件、自检脚本）。
 ---
 
-# ANUI — AI-Native UI（Mono + Motion）
+# ANUI — AI-Native UI (Mono + Motion)
 
-单色体系：颜色不承担层级，**亮度、材质和运动**承担层级；唯一的彩色是功能红（危险/错误）。
+A monochrome system: colour does not carry hierarchy. **Lightness, material and motion** do. The only hue is a functional red (danger / error).
 
-## 何时使用
-- 构建或重构 Agent、Copilot、AI SaaS 的工作台、聊天面板、工具调用流、人在回路审批；
-- 实现 AI 专属组件：Thinking、Streaming Text、Tool Chips、Approval Card、Task Rows、Prompt Bar、Records/Diff Table、Insight Cards 等；
-- 审查已有 AI 界面的精致度、动效、对比度、可访问性、阴影裁切、输入法问题。
+> 中文说明：本文件以英文为主，方便各类编码 Agent 理解。`references/` 下的中文文档为权威版本，`references/en/` 为对应英文译文，两者结构一致。
 
-## 按任务读取
-| 任务 | 读取 |
+## When to use
+- Building or refactoring agent / copilot / AI SaaS workspaces, chat panels, tool-call streams and human-in-the-loop approvals.
+- Implementing AI-specific components: Thinking, Streaming Text, Tool Chips, Approval Card, Task Rows, Prompt Bar, Records/Diff Table, Insight Cards, and so on.
+- Reviewing an existing AI UI for polish, motion, contrast, accessibility, shadow clipping and IME issues.
+
+## What to read, by task
+Each reference exists in Chinese (`references/*.md`, canonical) and English (`references/en/*.md`). Read whichever language you work in; the numbers and rules are identical.
+
+| Task | Read |
 | --- | --- |
-| 建主题、配 Tailwind/shadcn、选颜色字号圆角 | `references/tokens.md`（实现：`demo/src/app.css`） |
-| 黑白进阶：层级、材质、暗岛、对比度、主题切换、中文排版 | `references/monochrome.md` + `scripts/contrast.py` |
-| 动效：弹簧预设、手势、AI 动效、光效、音效、性能、基础曲线 | `references/motion-advanced.md`（实现：`demo/spring.js`、`demo/presets.js`、`demo/motion.css`） |
-| 实现某个组件 | `references/components.md`（对应小节）+ `references/motion-advanced.md` 附录 |
-| 工程坑：阴影裁切、IME、滚动跟随、分栏、状态真实性 | `references/craft-rules.md` |
-| 交付验收 | `references/acceptance.md` + `scripts/clip-audit.js`；本仓库自检 `npm run check` |
-| 看效果 | `demo/index.html`（离线可用；`?theme=hc|oled|oled-hc|paper|white|dark`，`?rm` 模拟减少动效） |
-| 来源与证据等级 | `references/sources.md` |
+| Set up themes, Tailwind/shadcn, colours, sizes, radii | `tokens.md` (implementation: `demo/src/app.css`) |
+| Advanced black & white: elevation, materials, dark islands, contrast, theme switching, Chinese typography | `monochrome.md` + `scripts/contrast.py` |
+| Motion: spring presets, gestures, AI motion, light effects, sound, performance, base curves | `motion-advanced.md` (implementation: `demo/spring.js`, `demo/presets.js`, `demo/motion.css`) |
+| Implement a component | `components.md` (that section) + the `motion-advanced.md` appendix |
+| Engineering pitfalls: shadow clipping, IME, scroll follow, split panes, truthful state | `craft-rules.md` |
+| Delivery acceptance | `acceptance.md` + `scripts/clip-audit.js`; this repo's self-check is `npm run check` |
+| See it working | `demo/index.html` (offline; `?theme=hc\|oled\|oled-hc\|paper\|white\|dark`, `?rm` for reduced motion, `?lang=en` for English UI) |
+| Sources and evidence levels | `sources.md` |
 
-## 默认主题
-- **浅色默认 `hc`（纯白底 + 纯黑字）；深色默认 `oled`（纯黑底）。** 同圆角、同 ring 逻辑、同字重档位、同一个红。
-- 可选：`oled-hc`、`paper`（纸白）、`white`（纯白）、`dark`（近黑）。
-- 无用户选择时：系统深色 → `oled`（同时 `prefers-contrast: more` → `oled-hc`），否则 → `hc`。
+## Default themes
+- **Light default `hc`** (pure white, pure black text). **Dark default `oled`** (pure black). They share radii, ring logic, weight steps and the same red.
+- Optional: `oled-hc`, `paper`, `white`, `dark` (near-black).
+- With no user choice: OS dark → `oled` (`oled-hc` if `prefers-contrast: more` is also set); otherwise → `hc`.
 
-## 工作流
-1. **探测项目**：读 `package.json`、全局 CSS、组件目录。已有设计系统（shadcn / AntD / 自有 tokens）→ 只把 tokens.md 的变量映射进去（tokens.md §8），**不引入第二套组件库**。新项目 → 默认 React + Tailwind v4 + shadcn/Radix + `motion`。
-2. **落令牌**：参照 `demo/src/app.css` 的主题块与 `@theme` 映射（tokens.md §3–§4）；字体 Geist + 中文字体（ANUI Sans SC 或系统 PingFang/雅黑）+ Geist Mono。
-3. **先状态机后视觉**：每个组件写清状态（draft / queued / running / awaiting-approval / done / failed / aborted），由真实事件驱动。
-4. **按 components.md 实现**，并执行每节末尾的“DAU 修正”；动效只用 motion-advanced.md §2 的 8 个弹簧预设或其 CSS `linear()` 版本。
-5. **验收**：跑 acceptance.md；有阴影的区域运行 clip-audit（默认 / hover / 展开 / 动效终态）直到 `cut === 0`；`contrast.py` 全部通过；截图 `hc` + `oled`。
+## Workflow
+1. **Inspect the project.** Read `package.json`, global CSS and the component folders.
+   - Existing design system (shadcn / AntD / own tokens): only map the tokens.md variables into it (tokens.md §8). **Never add a second component library.**
+   - New project: default to React + Tailwind v4 + shadcn/Radix + `motion`.
+2. **Apply tokens.** Follow the theme blocks and `@theme` mapping in `demo/src/app.css` (tokens.md §3–§4).
+   - Fonts: Geist + a Chinese face (ANUI Sans SC, or system PingFang / YaHei) + Geist Mono.
+3. **State machine before visuals.** Spell out each component's states (draft / queued / running / awaiting-approval / done / failed / aborted), driven by real events.
+4. **Implement from components.md.** Apply the "DAU correction" at the end of each section.
+   - Motion uses only the 8 spring presets in motion-advanced.md §2, or their CSS `linear()` versions.
+5. **Accept.** Run through acceptance.md.
+   - For shadowed areas, run clip-audit (default / hover / expanded / end-of-animation) until `cut === 0`.
+   - `contrast.py` must pass completely.
+   - Screenshot `hc` and `oled`.
 
-## 优先级
-1. 用户明确要求 > 项目已有设计系统 > 本 Skill 视觉令牌；
-2. 工艺规则（craft-rules.md、acceptance.md）始终适用；
-3. 组件规格中来自上游的原始尺寸与本 Skill 冲突时，以 tokens.md 为准。
+## Priority
+1. Explicit user request > the project's existing design system > this skill's visual tokens.
+2. Craft rules (craft-rules.md, acceptance.md) always apply.
+3. Where an upstream size in the component specs conflicts with this skill, tokens.md wins.
 
-## 硬性禁令（速查）
-- 不用计时器或假动画伪造 Agent 进度；
-- 字号不超过 4 种、不小于 12px（12 / 13 / 14 / 20）；
-- 不用 “·” 分隔；不加解释性副标题；不做左边缘彩条卡片；
-- 除功能红外不引入彩色；强调 = 反色；
-- 浮层（菜单、预览、选中操作条）不放在 `overflow:hidden` 容器里 → portal；
-- Enter 发送必须有 IME 守卫；尊重 `prefers-reduced-motion`；
-- 不全局隐藏滚动条、不全局 `overflow: visible`。
+## Hard rules (quick reference)
+- Never fake agent progress with timers or decorative animation.
+- At most 4 font sizes, none below 12px (12 / 13 / 14 / 20).
+- No "·" separators, no explanatory subtitles, no left-edge colour-stripe cards.
+- No hue except the functional red; emphasis = inversion.
+- Overlays (menus, previews, selection toolbars) never live inside `overflow:hidden` containers; portal them.
+- Enter-to-send must have an IME guard: `isComposing`, keyCode 229, and a 500ms window after `compositionend`. Respect `prefers-reduced-motion`.
+- Never hide scrollbars globally or set `overflow: visible` globally.
 
-## 许可
-本 Skill MIT（© 2026 yamyyyyy）。组件模式受 beautiful-ui（MIT，Shane Levine）启发，工艺规则与 `scripts/clip-audit.js` 来自 desktop-agent-ui（MIT）；字体为 SIL OFL 1.1。详见 `THIRD_PARTY_LICENSES.md`。
+## Chinese typography (中文排版要点)
+- Font stack: `Geist, "ANUI Sans SC", system-ui, "PingFang SC", "Microsoft YaHei"`; numbers `tabular-nums`.
+- `text-spacing-trim: trim-start`（行首标点半宽）, `text-autospace: normal`（中西文自动间距，已有空格时不叠加）, `line-break: strict`, `font-feature-settings: "chws"`（标点挤压）。
+- Line height 1.55 (light) / 1.6 (dark); Chinese long-form body 1.7 (unverified).
+- Don't emphasise Chinese body text with weights above 500; use ink colour + 500 instead.
+- Details: `monochrome.md` §11（中文） / `en/monochrome.md` §11 (English).
+
+## License
+- This skill: MIT (© 2026 yamyyyyy).
+- Component patterns are inspired by beautiful-ui (MIT, Shane Levine).
+- Craft rules and `scripts/clip-audit.js` come from desktop-agent-ui (MIT).
+- Fonts: SIL OFL 1.1.
+
+See `THIRD_PARTY_LICENSES.md`.

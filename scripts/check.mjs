@@ -2,7 +2,8 @@
 // ANUI self-check: loads demo/index.html in every theme with Playwright and verifies
 //   1) no JS errors  2) no network requests (file/data/blob only)
 //   3) clip-audit cut === 0  4) font sizes ⊂ whitelist  5) token contrast (scripts/contrast.py)
-// Usage: npm run check   (env: CHROME_PATH=/path/to/chrome, THEMES=hc,oled, SHOTS=1)
+//   6) ?lang=en runs: no visible untranslated CJK text
+// Usage: npm run check   (env: CHROME_PATH=/path/to/chrome, THEMES=hc,oled, EN_THEMES=hc,oled (or 'none'), SHOTS=1)
 import { chromium } from 'playwright';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -13,6 +14,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DEMO = pathToFileURL(path.join(ROOT, 'demo/index.html')).href;
 const REPORTS = path.join(ROOT, 'reports'); mkdirSync(REPORTS, { recursive: true });
 const THEMES = (process.env.THEMES || 'hc,oled,oled-hc,paper,white,dark').split(',');
+const EN_THEMES = (process.env.EN_THEMES || 'hc,oled').split(',').filter(t => t && t !== 'none');
+const RUNS = [...THEMES.map(t => [t, 'zh']), ...EN_THEMES.map(t => [t, 'en'])];
 const SIZES = [12, 13, 14, 20];
 const TOKENS = ['page','surface','overlay','hover','field','ink','ink-2','ink-3','ink-4','red','red-tint','accent','on-accent','tooltip-bg','tooltip-fg','tooltip-muted'];
 const audit = readFileSync(path.join(ROOT, 'scripts/clip-audit.js'), 'utf8').replace(/^\s*\/\/.*$/mg, '').trim().replace(/;\s*$/, '');
@@ -22,26 +25,28 @@ const browser = await chromium.launch({
   args: ['--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'],
 });
 const results = {}, tokens = {}; let failed = 0;
-for (const theme of THEMES) {
+for (const [theme, lang] of RUNS) {
+  const key = lang === 'zh' ? theme : `${theme}@en`;
   const page = await browser.newPage({ viewport: { width: 1100, height: 900 } });
   const errs = [], net = [];
   page.on('pageerror', e => errs.push(e.message));
   page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
   page.on('request', r => { if (!/^(file|data|blob):/.test(r.url())) net.push(r.url()); });
-  await page.goto(`${DEMO}?theme=${theme}`);
+  await page.goto(`${DEMO}?theme=${theme}&lang=${lang}`);
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } scrollTo(0, 0); });
   await page.click('#run').catch(() => {}); await page.waitForTimeout(6500);
   await page.click('#toastAdd').catch(() => {}); await page.waitForTimeout(800);
   const sizes = await page.evaluate(() => { const s = new Set(); document.querySelectorAll('body *').forEach(e => { if ([...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) && e.getClientRects().length) s.add(parseFloat(getComputedStyle(e).fontSize)); }); return [...s].sort((a, b) => a - b); });
+  const cjk = lang === 'en' ? await page.evaluate(() => { const out = new Set(), re = /[\u3400-\u9fff]/; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const e = n.parentElement; if (e && !e.closest('[data-i18n-keep],script,style') && re.test(n.textContent) && e.getClientRects().length) out.add(n.textContent.trim().slice(0, 40)); } return [...out]; }) : [];
   const clip = await page.evaluate(`(${audit})({})`);
-  tokens[theme] = await page.evaluate(names => { const p = document.createElement('i'); document.body.append(p); const o = {}; for (const n of names) { p.style.color = `var(--${n})`; o[n] = getComputedStyle(p).color; } p.remove(); return o; }, TOKENS);
-  if (process.env.SHOTS) await page.screenshot({ path: path.join(REPORTS, `shot-${theme}.png`) });
+  if (lang === 'zh') tokens[theme] = await page.evaluate(names => { const p = document.createElement('i'); document.body.append(p); const o = {}; for (const n of names) { p.style.color = `var(--${n})`; o[n] = getComputedStyle(p).color; } p.remove(); return o; }, TOKENS);
+  if (process.env.SHOTS) await page.screenshot({ path: path.join(REPORTS, `shot-${key}.png`) });
   const badSizes = sizes.filter(s => !SIZES.includes(s));
-  const ok = !errs.length && !net.length && clip.cut === 0 && !badSizes.length;
+  const ok = !errs.length && !net.length && clip.cut === 0 && !badSizes.length && !cjk.length;
   failed += !ok;
-  results[theme] = { ok, errors: errs, network: net, cut: clip.cut, issues: (clip.issues || []).slice(0, 5), sizes, badSizes };
-  console.log(`${ok ? '✓' : '✗'} ${theme.padEnd(8)} errors=${errs.length} network=${net.length} cut=${clip.cut} sizes=[${sizes}]${badSizes.length ? ' bad=' + badSizes : ''}`);
+  results[key] = { ok, lang, untranslated: cjk, errors: errs, network: net, cut: clip.cut, issues: (clip.issues || []).slice(0, 5), sizes, badSizes };
+  console.log(`${ok ? '✓' : '✗'} ${key.padEnd(11)} errors=${errs.length} network=${net.length} cut=${clip.cut} sizes=[${sizes}]${badSizes.length ? ' bad=' + badSizes : ''}${cjk.length ? ' untranslated=' + JSON.stringify(cjk.slice(0, 3)) : ''}`);
   await page.close();
 }
 await browser.close();

@@ -1,5 +1,7 @@
 # ANUI — AI-Native UI Skill
 
+**简体中文** · [English](README.en.md)
+
 > 给 Codex 用的 AI 应用界面设计 Skill：**黑白单色 + 弹簧动效 + 中文排版 + AI 专属组件 + 自检脚本**。
 
 <p align="center">
@@ -22,7 +24,7 @@ ANUI 是一套写给编码 Agent 读的设计系统。装进 Codex 后，Agent �
 - **弹簧动效**：8 个预设（press / snap / glide / settle / pop / sheet / fling / breathe），用 Apple 式 duration + bounce 定义，闭式求解并生成 CSS `linear()`；可打断、进出不对称、尊重减少动效。
 - **中文排版**：Geist + ANUI Sans SC（Noto Sans SC 子集）+ Geist Mono；`text-autospace`、`text-spacing-trim`、`line-break: strict`，深色/高对比字重补偿。
 - **AI-native 组件**：思考轨迹、流式回答、工具调用 chip、审批卡、任务行、Prompt Bar（IME 守卫）、Diff / Records 表格、洞察卡等 21 个，另有 AI 专属动效（思考呼吸、流式前沿、工具进度、在场感）。
-- **自检脚本**：`npm run check` 用 Playwright 打开 demo 的 6 个主题，检查 JS 错误、外部请求、阴影裁切（clip-audit `cut = 0`）、字号白名单（12 / 13 / 14 / 20）和令牌对比度。
+- **自检脚本**：`npm run check` 用 Playwright 打开 demo 的 6 个主题，检查 JS 错误、外部请求、阴影裁切（clip-audit `cut = 0`）、字号白名单（12 / 13 / 14 / 20）、令牌对比度，以及英文模式下的未翻译文本。
 
 ## 安装到 Codex
 
@@ -40,7 +42,7 @@ git clone https://github.com/yamyyyyy/ai-native-ui-skill .agents/skills/anui
 
 ## 快速开始
 
-- **看效果**：直接用浏览器打开 `demo/index.html`（离线、无外部请求）。`?theme=hc|oled|oled-hc|paper|white|dark` 切主题，`?rm` 模拟减少动效。
+- **看效果**：直接用浏览器打开 `demo/index.html`（离线、无外部请求）。`?theme=hc|oled|oled-hc|paper|white|dark` 切主题，`?rm` 模拟减少动效；`?lang=en`（或顶部 **EN / 中文** 按钮）切换英文界面，默认中文并记住选择。
 - **在项目里用**：对 Codex 说“按 anui skill 给这个聊天面板做一个审批卡”。Skill 会按 `SKILL.md` 的路由表加载 `references/tokens.md`、`components.md`、`motion-advanced.md` 等。
 - **只要令牌**：照抄 `demo/src/app.css` 的主题块和 `@theme` 映射（说明见 `references/tokens.md`）。
 
@@ -57,12 +59,13 @@ references/
   craft-rules.md         工艺规则：阴影裁切、IME、滚动跟随……
   acceptance.md          交付验收清单
   sources.md             来源与证据等级
+  en/                    以上文件的英文译本（以中文为准）
 scripts/
   check.mjs              一键自检（Playwright）
   perf.mjs               帧时序采样
   clip-audit.js          阴影裁切审计（来自 desktop-agent-ui，MIT）
   contrast.py            APCA + WCAG 对比度
-demo/                    单页演示（index.html、spring.js、presets.js、motion.*、assets/）
+demo/                    单页演示（index.html、spring.js、presets.js、motion.*、i18n.js、i18n-en.js、assets/）
 docs/media/              README 用的动图与截图
 ```
 
@@ -71,12 +74,12 @@ docs/media/              README 用的动图与截图
 ```bash
 npm install
 npm run browsers          # 下载 Chromium；已有浏览器可改用 CHROME_PATH=/path/to/chrome
-npm run check             # 6 个主题全部检查，报告写入 reports/
+npm run check             # 6 个主题 + 英文界面检查，报告写入 reports/
 npm run perf              # 可选：脚本化交互的帧时序 → reports/perf.json
 npm run build:css         # 修改 demo/src/app.css 后重建 Tailwind
 ```
 
-`check` 需要 Python 3 运行 `scripts/contrast.py`；环境变量 `THEMES=hc,oled` 可只测部分主题，`SHOTS=1` 会额外截图。
+`check` 需要 Python 3 运行 `scripts/contrast.py`；环境变量 `THEMES=hc,oled` 可只测部分主题，`EN_THEMES=hc,oled`（默认；`none` 跳过）选择英文检查的主题，`SHOTS=1` 会额外截图。
 
 ## 致谢（Inspired by / built upon）
 
@@ -86,16 +89,10 @@ npm run build:css         # 修改 demo/src/app.css 后重建 Tailwind
 
 详见 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) 与 [`NOTICE`](NOTICE)。本项目以 [MIT](LICENSE) 发布。
 
----
+## 语言
 
-## English
+- `SKILL.md` 以英文为主，中文排版要点保留中文；`AGENTS.md`、`CHANGELOG.md`、`CONTRIBUTING.md` 双语。
+- `references/*.md`（中文）为准，`references/en/*.md` 是标题一一对应的完整英译。
+- demo 以中文文案为源，`demo/i18n-en.js` 提供英文映射，`demo/i18n.js` 运行时替换。
 
-**ANUI (AI-Native UI)** is a design skill for Codex and other coding agents that build AI app interfaces: agent workspaces, chat panels, tool-call streams, approval cards.
-
-- **Monochrome OLED / high-contrast themes**: `hc` (pure white) is the light default and `oled` (pure black) the dark default. Hierarchy comes from luminance, material and motion. The only hue is a functional red. Contrast is checked with APCA and WCAG.
-- **Spring motion**: 8 presets defined by duration + bounce, with a closed-form solver and a CSS `linear()` generator. Motion is interruptible and honours reduced-motion.
-- **Chinese typography**: Geist + ANUI Sans SC (an OFL subset of Noto Sans SC) + Geist Mono, with autospace and trim rules.
-- **AI-native components**: 21 components plus AI-specific motion.
-- **Self-checks**: `npm run check` runs Playwright over all 6 demo themes and fails on JS errors, network requests, clipped shadows, off-scale font sizes or failing contrast.
-
-Install by cloning into `~/.agents/skills/anui` (user-level) or `.agents/skills/anui` (project-level), then paste `AGENTS.md` into your project's `AGENTS.md`. Docs are written in Simplified Chinese; code and tokens are in English. MIT licensed; see `THIRD_PARTY_LICENSES.md` for credits.
+English documentation: [README.en.md](README.en.md).
