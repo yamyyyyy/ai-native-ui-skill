@@ -1,0 +1,23 @@
+{
+  "name": "anui",
+  "version": "0.1.0",
+  "description": "ANUI — AI-Native UI skill for Codex: OLED/HC monochrome tokens, spring motion, Chinese typography, AI-native components, self-check scripts.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "yamyyyyy",
+  "repository": { "type": "git", "url": "https://github.com/yamyyyyy/ai-native-ui-skill" },
+  "homepage": "https://yamyyyyy.github.io/ai-native-ui-skill/",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "perf": "node scripts/perf.mjs",
+    "build:css": "tailwindcss -i demo/src/app.css -o demo/assets/tailwind.css --minify",
+    "browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "playwright": "^1.59.1",
+    "tailwindcss": "^4.1.0"
+  },
+  "engines": { "node": ">=18" }
+}

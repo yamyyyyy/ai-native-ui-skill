@@ -1,0 +1,19 @@
+ANUI (ai-native-ui-skill)
+Copyright (c) 2026 yamyyyyy — MIT License (see LICENSE)
+
+This project includes or is derived from third-party work:
+
+- scripts/clip-audit.js — copied unmodified from desktop-agent-ui
+  (https://github.com/Ludi-Herry/desktop-agent-ui), Copyright (c) 2026
+  Desktop Agent UI Contributors, MIT License.
+- Component patterns and craft rules described in references/ are inspired by
+  beautiful-ui (https://github.com/slev12397/beautiful-ui, https://beautifului.dev),
+  Copyright (c) 2026 Shane Levine, MIT License, and desktop-agent-ui (MIT).
+  No beautiful-ui source code, images or sample content is redistributed.
+- demo/assets/fonts/geist.woff2, geist-mono.woff2 — subsets of Geist / Geist Mono,
+  Copyright 2024 The Geist Project Authors, SIL Open Font License 1.1.
+- demo/assets/fonts/anui-sans-sc.woff2 — a subset of Noto Sans SC (Copyright
+  2014-2021 Adobe, Reserved Font Name 'Source'), SIL Open Font License 1.1,
+  renamed "ANUI Sans SC" as a Modified Version.
+
+Full license texts: THIRD_PARTY_LICENSES.md and demo/assets/fonts/OFL-*.txt.
