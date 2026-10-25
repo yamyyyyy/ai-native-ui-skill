@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### 变更 / Changed
+- 仓库改为 UI Skill 合集：ANUI 移至 `skills/anui/`（含 `SKILL.md`、`AGENTS.md`、`references/`、`demo/`、`scripts/`、`docs/media/`），根目录 README 改为合集索引。 / The repo is now a UI skills collection: ANUI moves to `skills/anui/` (with `SKILL.md`, `AGENTS.md`, `references/`, `demo/`, `scripts/`, `docs/media/`), and the root READMEs become a collection index.
+- 安装方式改为只取子目录：`npx degit yamyyyyy/ai-native-ui-skill/skills/anui ~/.agents/skills/anui`。 / Install just the skill folder: `npx degit yamyyyyy/ai-native-ui-skill/skills/anui ~/.agents/skills/anui`.
+- Pages 改为发布 `_site/`（`scripts/build-site.mjs`）：首页列出 Skill，ANUI demo 位于 `/skills/anui/demo/`。 / Pages now deploys `_site/` (built by `scripts/build-site.mjs`): the home page lists skills and the ANUI demo is at `/skills/anui/demo/`.
+- 根 `package.json` 脚本指向 `skills/anui/`，新增 `check:anui`、`build:site`；报告写入 `skills/anui/reports/`。 / Root `package.json` scripts point at `skills/anui/`, with new `check:anui` and `build:site`; reports go to `skills/anui/reports/`.
+
 ### 新增 / Added
 - `README.en.md`：与中文 README 对等的英文版，两者顶部互链。 / English README at parity with the Chinese one, cross-linked.
 - `references/en/`：全部参考文档的英文译本（中文为准）。 / English translations of all references (Chinese is canonical).

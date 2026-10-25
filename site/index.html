@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Native UI Skills</title>
+<style>
+  :root { color-scheme: light dark; --bg: #fff; --fg: #000; --mute: #555; --line: #000; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #000; --fg: #f4f4f4; --mute: #aaa; --line: #f4f4f4; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.6 system-ui, -apple-system, "PingFang SC", "Noto Sans SC", sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 64px 24px; }
+  h1 { font-size: 20px; margin: 0 0 8px; }
+  p { color: var(--mute); margin: 0 0 32px; }
+  ul { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+  li { border-bottom: 1px solid var(--line); padding: 16px 0; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+  li b { font-size: 14px; min-width: 64px; }
+  li span { flex: 1; color: var(--mute); }
+  a { color: var(--fg); }
+  footer { margin-top: 32px; font-size: 12px; color: var(--mute); }
+</style>
+</head>
+<body>
+<main>
+  <h1>AI-Native UI Skills</h1>
+  <p>给 Codex 用的 AI 原生界面 Skill 合集，专注黑白美学。 / AI-native UI skills for Codex, focused on a black-and-white aesthetic.</p>
+  <ul>
+    <li><b>ANUI</b><span>OLED / HC 单色令牌、弹簧动效、中文排版、AI 专属组件与自检脚本。 / Monochrome tokens, spring motion, Chinese typography, AI-native components, self-checks.</span>
+      <a href="skills/anui/demo/">Demo（中文）</a> <a href="skills/anui/demo/?lang=en">Demo (EN)</a></li>
+  </ul>
+  <footer><a href="https://github.com/yamyyyyy/ai-native-ui-skill">github.com/yamyyyyy/ai-native-ui-skill</a> — MIT</footer>
+</main>
+</body>
+</html>

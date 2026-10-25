@@ -3,3 +3,4 @@ reports/
 *.log
 .DS_Store
 /tmp/
+_site/

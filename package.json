@@ -1,17 +1,22 @@
 {
-  "name": "anui",
+  "name": "ai-native-ui-skill",
   "version": "0.1.0",
-  "description": "ANUI — AI-Native UI skill for Codex: OLED/HC monochrome tokens, spring motion, Chinese typography, AI-native components, self-check scripts.",
+  "description": "AI-native UI skills for Codex (black/white aesthetic). Skills live in skills/<name>/; first skill: ANUI.",
   "private": true,
   "type": "module",
   "license": "MIT",
   "author": "yamyyyyy",
-  "repository": { "type": "git", "url": "https://github.com/yamyyyyy/ai-native-ui-skill" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yamyyyyy/ai-native-ui-skill"
+  },
   "homepage": "https://yamyyyyy.github.io/ai-native-ui-skill/",
   "scripts": {
-    "check": "node scripts/check.mjs",
-    "perf": "node scripts/perf.mjs",
-    "build:css": "tailwindcss -i demo/src/app.css -o demo/assets/tailwind.css --minify",
+    "check": "node skills/anui/scripts/check.mjs",
+    "check:anui": "node skills/anui/scripts/check.mjs",
+    "perf": "node skills/anui/scripts/perf.mjs",
+    "build:css": "tailwindcss -i skills/anui/demo/src/app.css -o skills/anui/demo/assets/tailwind.css --minify",
+    "build:site": "node scripts/build-site.mjs",
     "browsers": "playwright install chromium"
   },
   "devDependencies": {
@@ -19,5 +24,7 @@
     "playwright": "^1.59.1",
     "tailwindcss": "^4.1.0"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  }
 }

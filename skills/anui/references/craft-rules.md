@@ -1,6 +1,6 @@
 # 工艺规则（Craft Rules，精简自 desktop-agent-ui，MIT）
 
-> 上游：https://github.com/Ludi-Herry/desktop-agent-ui （commit 44653f9，© 2026 Desktop Agent UI Contributors，MIT，见 ../THIRD_PARTY_LICENSES.md）。本文为精简改写。
+> 上游：https://github.com/Ludi-Herry/desktop-agent-ui （commit 44653f9，© 2026 Desktop Agent UI Contributors，MIT，见 ../../../THIRD_PARTY_LICENSES.md）。本文为精简改写。
 
 ## A. 视觉精致度八条铁律
 

@@ -1,7 +1,7 @@
 <!-- English translation of references/craft-rules.md. The Chinese file is canonical; keep headings in sync. -->
 # Craft Rules (condensed from desktop-agent-ui, MIT)
 
-> Upstream: https://github.com/Ludi-Herry/desktop-agent-ui (commit 44653f9, © 2026 Desktop Agent UI Contributors, MIT; see ../../THIRD_PARTY_LICENSES.md). This is a condensed rewrite.
+> Upstream: https://github.com/Ludi-Herry/desktop-agent-ui (commit 44653f9, © 2026 Desktop Agent UI Contributors, MIT; see ../../../../THIRD_PARTY_LICENSES.md). This is a condensed rewrite.
 
 ## A. Eight rules of visual refinement
 
